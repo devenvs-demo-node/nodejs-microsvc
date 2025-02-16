@@ -15,3 +15,6 @@ Link: [3rd Video of the Playlist](https://www.youtube.com/watch?v=T-xCylkjSf8&li
 [Link to Backend Microservice](https://github.com/codergogoi/nodejs_microservice)
 
 [Link to Frontend Microservice](https://github.com/devarsh10/microservice-frontend)
+
+**Postman Collection**
+[JSON File](https://github.com/codergogoi/Grocery_Online_Shopping_App/blob/master/online_shopping_monolithic/Microservices%20Tutorial.postman_collection.json)
