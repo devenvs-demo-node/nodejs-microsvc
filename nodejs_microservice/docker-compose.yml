@@ -19,10 +19,13 @@ services:
       - rolldice-app-network
 
   products:
-    build:
-      dockerfile: Dockerfile
-      context: ./products
+    image: devarsh10/nodejs_microservice-products:v1
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./products
     container_name: products
+    environment:
+      - OTEL_SERVICE_NAME=products_service
     ports:
       - "8002:8002"
     restart: always
@@ -60,10 +63,10 @@ services:
       - rolldice-app-network
 
   customer:
-    # image: deleteme:v1
-    build:
-      dockerfile: Dockerfile
-      context: ./customer
+    image: devarsh10/nodejs_microservice-customer:v2
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./customer
     container_name: customer
     environment:
       - OTEL_SERVICE_NAME=customer_service
