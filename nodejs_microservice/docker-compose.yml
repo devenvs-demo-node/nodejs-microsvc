@@ -7,12 +7,16 @@ services:
     container_name: nosql-db
     volumes:
       - ./db/:/data/db
+    networks:
+      - rolldice-app-network
 
   rabbitmq:
     image: rabbitmq:alpine
     container_name: rabbitmq
     ports:
       - '5672:5672'
+    networks:
+      - rolldice-app-network
 
   products:
     build:
@@ -28,9 +32,11 @@ services:
     volumes:
       - .:/app
       - /app/products/node_modules
-
     env_file:
       - ./products/.env.dev
+    networks:
+      - rolldice-app-network
+
   shopping:
     build:
       dockerfile: Dockerfile
@@ -47,11 +53,17 @@ services:
       - /app/shopping/node_modules
     env_file:
       - ./shopping/.env.dev
+    networks:
+      - rolldice-app-network
+
   customer:
+    # image: deleteme:v1
     build:
       dockerfile: Dockerfile
       context: ./customer
     container_name: customer
+    environment:
+      - OTEL_SERVICE_NAME=customer_service
     ports:
       - "8001:8001"
     restart: always
@@ -63,7 +75,11 @@ services:
       - /app/customer/node_modules
     env_file:
       - ./customer/.env.dev
+    networks:
+      - rolldice-app-network
+
   nginx-proxy:
+    container_name: nginx-proxy
     build:
       dockerfile: Dockerfile
       context: ./proxy
@@ -73,3 +89,80 @@ services:
       - customer
     ports:
       - 80:80
+    networks:
+      - rolldice-app-network
+
+  init:
+    container_name: init
+    image: &tempoImage grafana/tempo:latest # Here we're kind of assinging grafana/tempo:latest to tempoImage variable
+    user: root
+    entrypoint:
+      - "chown"
+      - "10001:10001"
+      - "/var/tempo"
+    volumes:
+      - ./tempo-data:/var/tempo
+
+  tempo:
+    container_name: tempo
+    image: *tempoImage # and using the variable 'tempoImage' here
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - ./tempo-data:/var/tempo
+    ports:
+      - "3200:3200"
+    networks:
+      - rolldice-app-network
+    depends_on:
+      - init
+
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector
+    command: [--config=/etc/otel-collector-config.yaml]
+    volumes:
+      - ./collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4318:4318"
+    networks:
+      - rolldice-app-network
+    depends_on:
+      - tempo
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+      - --enable-feature=native-histograms
+    volumes:
+      - ./shared/prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"
+    networks:
+      - rolldice-app-network
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.2.0
+    volumes:
+      - ./shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor metricsSummary
+      - GF_INSTALL_PLUGINS=https://storage.googleapis.com/integration-artifacts/grafana-exploretraces-app/grafana-exploretraces-app-latest.zip;grafana-traces-app
+    networks:
+      - rolldice-app-network
+    depends_on:
+      - tempo
+
+networks:
+  rolldice-app-network:
+    name: rolldice-app-network

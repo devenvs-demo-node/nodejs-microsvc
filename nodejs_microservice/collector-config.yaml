@@ -1,0 +1,23 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: otel-collector:4317
+      http:
+        endpoint: otel-collector:4318
+exporters:
+  debug:
+    verbosity: detailed
+  # otlp/jaeger:
+  #   endpoint: "jaeger:4317"
+  #   tls:
+  #     insecure: true
+  otlp/tempo:
+    endpoint: "tempo:4317"
+    tls:
+      insecure: true
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [debug, otlp/tempo] # add otlp/jaeger when required
