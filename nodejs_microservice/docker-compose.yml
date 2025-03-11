@@ -38,10 +38,13 @@ services:
       - rolldice-app-network
 
   shopping:
-    build:
-      dockerfile: Dockerfile
-      context: ./shopping
+    image: devarsh10/nodejs_microservice-shopping:v1
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./shopping
     container_name: shopping
+    environment:
+      - OTEL_SERVICE_NAME=shopping_service
     ports:
       - "8003:8003"
     restart: always
