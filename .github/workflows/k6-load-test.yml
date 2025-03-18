@@ -29,7 +29,7 @@ jobs:
       #   run: docker run --network=host -v ${{ github.workspace }}/nodejs_microservice:/k6 grafana/k6 run /k6/script.js
 
       - name: Tear down services
-        run: pwd
+        run: cd ${{ github.workspace }}/nodejs_microservice && docker compose down -v
 
       - name: Upload k6 test results
         if: always()
