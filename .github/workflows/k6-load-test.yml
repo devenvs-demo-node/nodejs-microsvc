@@ -1,0 +1,44 @@
+name: k6 Load Testing
+
+on:
+  pull_request:
+    branches:
+      - main  # Runs when a PR targets the `main` branch
+
+jobs:
+  k6-load-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: echo github.workspace
+        run: echo ${{ github.workspace }}
+
+      - name: Set up Docker Compose
+        run: cd ${{ github.workspace }}/nodejs-microsvc/nodejs_microservice && docker-compose up -d
+
+
+      - name: Wait for services to be ready
+        run: sleep 20  # Adjust based on service startup time
+
+      - name: Run k6 Load Test
+        run: docker run --network=host -v ${{ github.workspace }}/nodejs_microservice:/k6 grafana/k6 run /k6/script.js
+
+
+      - name: Tear down services
+        run: docker-compose down
+
+      - name: Upload k6 test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results
+          path: results/
+
+      - name: Post PR Comment on Failure
+        if: failure()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: "k6 tests failed! Check the results in the **GitHub Actions logs**."
