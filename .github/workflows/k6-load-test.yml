@@ -23,7 +23,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
       - name: Set up Docker Compose
-        run: cd ${{ github.workspace }}/nodejs_microservice && docker-compose up -d
+        run: cd ${{ github.workspace }}/nodejs_microservice && docker-compose up -d --no-build
 
       - name: Wait for services to be ready
         run: sleep 20  # Adjust based on service startup time
@@ -33,7 +33,7 @@ jobs:
 
 
       - name: Tear down services
-        run: docker-compose down
+        run: pwd
 
       - name: Upload k6 test results
         if: always()
