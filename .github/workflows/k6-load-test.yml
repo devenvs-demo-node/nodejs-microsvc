@@ -20,7 +20,7 @@ jobs:
         run: echo ${{ github.workspace }}
 
       - name: Set up Docker Compose
-        run: cd ${{ github.workspace }}/nodejs_microservice && docker compose up -d --no-build
+        run: cd ${{ github.workspace }}/nodejs_microservice && docker compose up -d --build
 
       - name: Wait for services to be ready
         run: sleep 20  # Adjust based on service startup time
