@@ -1,9 +1,12 @@
 name: k6 Load Testing
 
 on:
-  pull_request:
+  push:
     branches:
-      - main  # Runs when a PR targets the `main` branch
+      - '**'  # Runs on all branches
+  # pull_request:
+  #   branches:
+  #     - main  # Runs when a PR targets the `main` branch
 
 jobs:
   k6-load-test:
