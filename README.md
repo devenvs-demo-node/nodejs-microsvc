@@ -66,5 +66,5 @@ I've made above mentioned changes in products and shopping service.
 # Troubleshooting
 
 1. I have faced issue, while I was build the image based on the Dockerfile. But the 'npm install' step was taking too much of time. Maybe, because of my PC.
-2. So, I have build the image from the codespaces and push the image to my DockerHub Account.
+2. So, I have build the image from the codespaces and push the image to my DockerHub Account. 
    
