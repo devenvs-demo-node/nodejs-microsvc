@@ -24,15 +24,21 @@ Link: [3rd Video of the Playlist](https://www.youtube.com/watch?v=T-xCylkjSf8&li
 1. We have three microservices as of now.
 
    i.  Customer Service
+   
    ii. Shopping Service
+
    iii. Product Service
 
-2. Diving inside the directory of customer service. I have modified the file, mentioned as below,
+3. Diving inside the directory of customer service. I have modified the file, mentioned as below,
 
    i. Created a .dockerignore file to ignore node_modules file while building the image
+   
    ii. Added a instrumentation.js file and replace localhost with otel-collector(the name of container)
+
    iii. In package.json add required packages used in instrumentation.js and added this(`"start": NODE_ENV=prod node --require ./instrumentation.js src/index.js`) line in which we're specifying `--require ./instrumentation.js`. Now, when we run `npm start`, the command will run and our app will be up and running.
+
    iv. In Dockerfile, I have replaced Image from 'node' to 'node:20-alpine'
+
    v. Made changes in docker-compose file, added few services like otel-collector, grafana, tempo and init, prometheus and finally, kept them into one virtual network.
 
 I've made above mentioned changes in products and shopping service.
@@ -48,7 +54,7 @@ I've made above mentioned changes in products and shopping service.
 1. Run `docker-compose up -d`
 2. Now, all services must be running.
 3. Import the Postman json linked above. In the Postman, Go to customer, send sign up request, send log in request, copy the bearer token and paste it in the parent folder(named Microservices Tutorial) of customer, shopping and products. Now, send request and check trace the request from Grafana Tempo.
-4. Refer this video link: (TODO)
+4. Refer this video link: [Part-1](https://drive.google.com/file/d/1JTPJtI-sXj-e4WwTjumI1WgRdJMjSgPd/view?usp=sharing) [Part-2](https://drive.google.com/file/d/18cNRTacxncecE79U9AuRMOKSZmuW_FX9/view?usp=sharing)
 
 ## In the Backend
 
