@@ -25,8 +25,8 @@ jobs:
       - name: Wait for services to be ready
         run: sleep 20  # Adjust based on service startup time
 
-      # - name: Run k6 Load Test
-      #   run: docker run --network=host -v ${{ github.workspace }}/nodejs_microservice:/k6 grafana/k6 run /k6/script.js
+      - name: Run k6 Load Test
+        run: docker run --network=host -v ${{ github.workspace }}/nodejs_microservice:/k6 grafana/k6 run /k6/script.js
 
       - name: Tear down services
         run: cd ${{ github.workspace }}/nodejs_microservice && docker compose down -v
