@@ -87,8 +87,8 @@ services:
   nginx-proxy:
     container_name: nginx-proxy
     build:
-      dockerfile: Dockerfile
       context: ./proxy
+      dockerfile: Dockerfile
     depends_on:
       products:
         condition: service_started
@@ -96,6 +96,7 @@ services:
         condition: service_started
       customer:
         condition: service_started
+    entrypoint: [ "sh", "-c", "sleep 20 && nginx -g 'daemon off;'" ]  # 20s delay
     ports:
       - 80:80
     networks:
