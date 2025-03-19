@@ -83,11 +83,6 @@ services:
       - ./customer/.env.dev
     networks:
       - rolldice-app-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
-      interval: 10s
-      retries: 5
-      start_period: 20s
 
   nginx-proxy:
     container_name: nginx-proxy
@@ -100,7 +95,7 @@ services:
       shopping:
         condition: service_started
       customer:
-        condition: service_healthy
+        condition: service_started
     ports:
       - 80:80
     networks:
