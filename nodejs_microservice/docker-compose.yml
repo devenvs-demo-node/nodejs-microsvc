@@ -95,9 +95,11 @@ services:
       dockerfile: Dockerfile
       context: ./proxy
     depends_on:
-      - products
-      - shopping
-      - customer
+      products:
+        condition: service_started
+      shopping:
+        condition: service_started
+      customer:
         condition: service_healthy
     ports:
       - 80:80
