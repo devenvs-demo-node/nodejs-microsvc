@@ -20,8 +20,13 @@ jobs:
         run: cd ${{ github.workspace }}/nodejs_microservice && docker compose up -d --build
 
       - name: Wait for services to be ready
-        run: sleep 10  # Adjust based on service startup time
+        run: |
+          echo "Waiting for services to start"
+          sleep 30
+          echo "Checking for containers..."
+          docker ps
 
+      # About to remove this step...last try..
       - name: Restart Nginx
         run: docker restart nginx-proxy
         
