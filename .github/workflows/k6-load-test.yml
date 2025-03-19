@@ -29,11 +29,28 @@ jobs:
       # About to remove this step...last try..
       - name: Restart Nginx
         run: docker restart nginx-proxy
-        
+
+      - name: Check nginx configuration
+        run: |
+          docker exec nginx-proxy cat /etc/nginx/conf.d/default.conf
+          docker exec nginx-proxy nginx -t
+          
       - name: Run k6 Load Test
         run: |
           cd /home/runner/work/nodejs-microsvc/nodejs-microsvc/nodejs_microservice
-          docker run --network=rolldice-app-network -v $(pwd)/script.js:/k6/script.js grafana/k6 run /k6/script.js
+          sed -i 's/http:\/\/nginx-proxy:80/http:\/\/localhost:80/g' script.js
+          docker run --network=host -v $(pwd)/script.js:/k6/script.js grafana/k6 run /k6/script.js
+
+      - name: Debug network connectivity
+        run: |
+          docker run --rm --network=rolldice-app-network alpine sh -c "ping -c 3 nginx-proxy"
+          docker run --rm --network=rolldice-app-network alpine sh -c "wget -O- http://nginx-proxy:80 || true"
+          docker run --rm --network=rolldice-app-network alpine sh -c "wget -O- http://customer:8001 || true"
+
+      # - name: Run k6 Load Test
+      #   run: |
+      #     cd /home/runner/work/nodejs-microsvc/nodejs-microsvc/nodejs_microservice
+      #     docker run --network=rolldice-app-network -v $(pwd)/script.js:/k6/script.js grafana/k6 run /k6/script.js
 
       - name: Tear down services
         run: cd ${{ github.workspace }}/nodejs_microservice && docker compose down -v
