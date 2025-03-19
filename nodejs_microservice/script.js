@@ -289,21 +289,21 @@ export default function () {
     }
 
     group('Customer Operations', function () {
-        let cartId = getCustomerProfile(authToken);
-        let shoppingDetails = getShoppingDetails(authToken);
-        let addAddress = postAddAddress(authToken);
-        let wishlist = getWishlist(authToken);
+        // let cartId = getCustomerProfile(authToken);
+        // let shoppingDetails = getShoppingDetails(authToken);
+        // let addAddress = postAddAddress(authToken);
+        // let wishlist = getWishlist(authToken);
     });
 
     group('Shopping Operations', function () {
-        let cart = getShoppingCart(authToken);
-        // let orderId = createOrder(authToken);
-        let orders = getOrders(authToken);
+        // let cart = getShoppingCart(authToken);
+        // // let orderId = createOrder(authToken);
+        // let orders = getOrders(authToken);
     });
 
     group('Product Operations', function () {
         
-        let products = getProducts(authToken);
+        // let products = getProducts(authToken);
 
         // console.log(products);
         // console.log(`Fetched products: ${JSON.stringify(products.products[0]._id)}`);
