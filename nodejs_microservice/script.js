@@ -33,9 +33,9 @@ export let options = {
 };
 
 // Base URLs
-const CUSTOMER_BASE = 'http://host.docker.internal:80/customer';
-const SHOPPING_BASE = 'http://host.docker.internal:80/shopping';
-const PRODUCTS_BASE = 'http://host.docker.internal:80';
+const CUSTOMER_BASE = 'http://nginx-proxy:80/customer';
+const SHOPPING_BASE = 'http://nginx-proxy:80/shopping';
+const PRODUCTS_BASE = 'http://nginx-proxy:80';
 
 // Authenticate and Get Token
 function authenticateUser() {
