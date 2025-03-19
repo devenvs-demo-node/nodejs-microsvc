@@ -22,6 +22,15 @@ jobs:
       - name: Wait for services to be ready
         run: sleep 10  # Adjust based on service startup time
 
+      - name: Debug Running Containers
+        run: |
+          echo "Checking running containers..."
+          docker ps -a
+          echo "Checking Nginx logs..."
+          docker logs nginx-proxy || true
+          echo "Checking Customer Service logs..."
+          docker logs customer || true
+
       - name: Run k6 Load Test
         run: |
           cd /home/runner/work/nodejs-microsvc/nodejs-microsvc/nodejs_microservice
